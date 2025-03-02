@@ -114,7 +114,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 
       {/* Main content */}
       <div className="flex flex-col flex-1 md:pl-64">
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-4">{children}</main>
       </div>
     </div>
   );

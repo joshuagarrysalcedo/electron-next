@@ -161,8 +161,8 @@ export function Dashboard({
         )}
         
         {/* Main Content */}
-        <main className={cn('flex-1', hideSidebar ? 'w-full' : 'md:ml-64')}>
-          <div className="p-6">
+        <main className={cn('flex-1', hideSidebar ? 'w-full' : '')}>
+          <div className="p-4">
             {/* Render children if provided */}
             {children && !renderChildrenWithView && children}
             

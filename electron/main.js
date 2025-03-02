@@ -1,8 +1,27 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
+const fs = require('fs');
 const isDev = process.env.NODE_ENV !== 'production';
 const ApiHandler = require('./api-handler');
+
+// Load and parse the ignore patterns
+const loadIgnorePatterns = () => {
+  try {
+    const patternsPath = isDev 
+      ? path.join(__dirname, '../.next-ignore/patterns.txt')
+      : path.join(process.resourcesPath, '.next-ignore', 'patterns.txt');
+      
+    if (fs.existsSync(patternsPath)) {
+      return fs.readFileSync(patternsPath, 'utf8')
+        .split('\n')
+        .filter(line => line.trim() !== '');
+    }
+  } catch (error) {
+    console.error('Error loading ignore patterns:', error);
+  }
+  return [];
+};
 
 // Keep a global reference to prevent window from being closed
 let mainWindow;

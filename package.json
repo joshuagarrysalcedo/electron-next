@@ -5,16 +5,16 @@
   "main": "electron/main.js",
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "rimraf .next out && next build",
     "start": "next start",
     "lint": "next lint",
     "electron:dev": "concurrently \"npm run dev\" \"npm run electron\"",
     "electron": "wait-on http://localhost:3000 && electron .",
-    "electron:build": "next build && electron-builder",
-    "electron:build:all": "next build && electron-builder -mwl",
-    "electron:build:mac": "next build && electron-builder --mac",
-    "electron:build:win": "next build && electron-builder --win",
-    "electron:build:linux": "next build && electron-builder --linux",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:all": "npm run build && electron-builder -mwl",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:linux": "npm run build && electron-builder --linux",
     "mobile:android": "cap add android && cap sync android && cap open android",
     "mobile:ios": "cap add ios && cap sync ios && cap open ios"
   },
@@ -83,6 +83,7 @@
     "electron-builder": "^24.9.1",
     "eslint": "^9",
     "eslint-config-next": "15.2.1-canary.5",
+    "rimraf": "^5.0.10",
     "tailwindcss": "^4",
     "typescript": "^5",
     "wait-on": "^7.2.0"
@@ -96,6 +97,18 @@
       "public/**/*",
       "node_modules/**/*",
       "package.json"
+    ],
+    "extraMetadata": {
+      "main": "electron/main.js"
+    },
+    "directories": {
+      "output": "dist"
+    },
+    "extraResources": [
+      {
+        "from": ".next-ignore",
+        "to": ".next-ignore"
+      }
     ],
     "mac": {
       "category": "public.app-category.utilities"
