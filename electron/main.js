@@ -31,10 +31,11 @@ function createWindow() {
 
   mainWindow.loadURL(startUrl);
 
-  // Open DevTools in development
-  if (isDev) {
-    mainWindow.webContents.openDevTools();
-  }
+  // DevTools are disabled by default
+  // Uncomment the following line to enable DevTools in development
+  // if (isDev) {
+  //   mainWindow.webContents.openDevTools();
+  // }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
