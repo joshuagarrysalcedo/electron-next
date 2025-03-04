@@ -4,6 +4,8 @@ import Script from 'next/script';
 import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 
+export const dynamic = 'force-static';
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

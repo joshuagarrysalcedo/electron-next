@@ -19,22 +19,22 @@ const nextConfig: NextConfig = {
       ];
       
       // Modify the module rules to exclude paths
-      config.module.rules.forEach(rule => {
-        if (rule.oneOf) {
-          rule.oneOf.forEach(oneOfRule => {
-            if (oneOfRule.include && oneOfRule.issuer === undefined) {
-              // Exclude the paths from being processed
-              if (!oneOfRule.exclude) {
-                oneOfRule.exclude = [];
-              }
+      // config.module.rules.forEach((rule: { oneOf: any[]; }) => {
+      //   if (rule.oneOf) {
+      //     rule.oneOf.forEach((oneOfRule: { include: any; issuer: undefined; exclude: RegExp[]; }) => {
+      //       if (oneOfRule.include && oneOfRule.issuer === undefined) {
+      //         // Exclude the paths from being processed
+      //         if (!oneOfRule.exclude) {
+      //           oneOfRule.exclude = [];
+      //         }
               
-              if (Array.isArray(oneOfRule.exclude)) {
-                oneOfRule.exclude.push(...excludePaths.map(path => new RegExp(path)));
-              }
-            }
-          });
-        }
-      });
+      //         if (Array.isArray(oneOfRule.exclude)) {
+      //           oneOfRule.exclude.push(...excludePaths.map(path => new RegExp(path)));
+      //         }
+      //       }
+      //     });
+      //   }
+      // });
     }
     
     return config;

@@ -2,8 +2,17 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
-const isDev = process.env.NODE_ENV !== 'production';
 const ApiHandler = require('./api-handler');
+
+// Use dynamic import for ESM modules
+let isDev = false;
+import('electron-is-dev').then(module => {
+  isDev = module.default;
+  if (app.isReady()) {
+    createWindow();
+    initializeApi();
+  }
+});
 
 // Load and parse the ignore patterns
 const loadIgnorePatterns = () => {
@@ -27,8 +36,7 @@ const loadIgnorePatterns = () => {
 let mainWindow;
 let apiHandler;
 
-function createWindow() {
-  // Create the browser window
+async function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
@@ -39,22 +47,15 @@ function createWindow() {
     }
   });
 
-  // Load the Next.js app
-  const startUrl = isDev 
-    ? 'http://localhost:3000' 
+  const startUrl = isDev
+    ? 'http://localhost:3000'
     : url.format({
         pathname: path.join(__dirname, '../out/index.html'),
         protocol: 'file:',
         slashes: true
       });
 
-  mainWindow.loadURL(startUrl);
-
-  // DevTools are disabled by default
-  // Uncomment the following line to enable DevTools in development
-  // if (isDev) {
-  //   mainWindow.webContents.openDevTools();
-  // }
+  await mainWindow.loadURL(startUrl);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -62,7 +63,6 @@ function createWindow() {
 }
 
 function initializeApi() {
-  // Initialize the API handler
   apiHandler = new ApiHandler({
     baseUrl: process.env.API_BASE_URL || 'https://api.example.com',
     timeout: 30000,
@@ -71,23 +71,21 @@ function initializeApi() {
       'User-Agent': `ElectronNextApp/${app.getVersion()}`
     }
   });
-  
-  // Example of setting up other IPC handlers
+
   ipcMain.on('toMain', (event, args) => {
-    // Handle general messages from renderer
     console.log('Received message from renderer:', args);
-    
-    // Example response
-    event.sender.send('fromMain', { 
-      received: true, 
-      timestamp: Date.now() 
+    event.sender.send('fromMain', {
+      received: true,
+      timestamp: Date.now()
     });
   });
 }
 
-app.on('ready', () => {
-  createWindow();
-  initializeApi();
+app.whenReady().then(() => {
+  if (isDev !== undefined) {
+    createWindow();
+    initializeApi();
+  }
 });
 
 app.on('window-all-closed', () => {
@@ -102,8 +100,6 @@ app.on('activate', () => {
   }
 });
 
-// App-wide error handler
 process.on('uncaughtException', (error) => {
   console.error('Uncaught exception:', error);
-  // You might want to log errors to a file or reporting service here
 });

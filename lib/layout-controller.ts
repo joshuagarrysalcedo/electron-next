@@ -1,3 +1,4 @@
+"use client"
 /**
  * layout-controller.ts - Utility for managing dashboard components and views
  * 

@@ -36,6 +36,9 @@
     "out/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "components/demo/**",
+    "components/examples/**",
+    "electron-scripts/**"
   ]
 }

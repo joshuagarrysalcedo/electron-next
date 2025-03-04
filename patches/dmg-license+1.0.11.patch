@@ -1,0 +1,38 @@
+diff --git a/node_modules/dmg-license/lib/Labels.js b/node_modules/dmg-license/lib/Labels.js
+index 9ef4a1d..8b9cab4 100644
+--- a/node_modules/dmg-license/lib/Labels.js
++++ b/node_modules/dmg-license/lib/Labels.js
+@@ -3,7 +3,10 @@
+ const path = require('path');
+ const fs = require('fs');
+ const tmp = require('tmp');
+-const IconvLite = require('iconv-corefoundation');
++// Skip iconv-corefoundation import on non-macOS platforms
++const IconvLite = process.platform === 'darwin' 
++  ? require('iconv-corefoundation')
++  : { encodingExists: () => false, convert: (str) => Buffer.from(str, 'utf8') };
+ 
+ class Labels {
+   static getEncodings() {
+diff --git a/node_modules/dmg-license/lib/assembleLicenses.js b/node_modules/dmg-license/lib/assembleLicenses.js
+index 5db4f60..8faf57b 100644
+--- a/node_modules/dmg-license/lib/assembleLicenses.js
++++ b/node_modules/dmg-license/lib/assembleLicenses.js
+@@ -3,7 +3,15 @@
+ const path = require('path');
+ const Labels = require('./Labels');
+ const semver = require('semver');
+-const { encodingExists } = require('iconv-corefoundation');
++
++// Skip iconv-corefoundation import on non-macOS platforms
++let encodingExists = () => false;
++
++// Only attempt to load on macOS
++if (process.platform === 'darwin') {
++  try {
++    ({ encodingExists } = require('iconv-corefoundation'));
++  } catch (e) {}
++}
+ 
+ const SIZES = {
+   small: {

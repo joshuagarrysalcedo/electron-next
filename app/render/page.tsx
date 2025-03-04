@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-static';
+
 import React, { useState } from 'react';
 import { Dashboard } from '@/components/reusable/Dashboard';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';

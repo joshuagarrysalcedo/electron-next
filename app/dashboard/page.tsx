@@ -1,5 +1,7 @@
 'use client';
 
+export const dynamic = 'force-static';
+
 import React from 'react';
 import { Dashboard } from '@/components/reusable/Dashboard';
 import { useAuth } from '@/contexts/AuthContext';

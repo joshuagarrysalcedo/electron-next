@@ -2,7 +2,17 @@
   "name": "electron-next",
   "version": "0.1.0",
   "private": true,
+  "description": "A cross-platform application built with Electron and Next.js",
+  "author": {
+    "name": "Joshua Salcedo",
+    "email": "joshua@example.com"
+  },
   "main": "electron/main.js",
+  "pnpm": {
+    "patchedDependencies": {
+      "dmg-license@1.0.11": "patches/dmg-license+1.0.11.patch"
+    }
+  },
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "rimraf .next out && next build",
@@ -10,11 +20,14 @@
     "lint": "next lint",
     "electron:dev": "concurrently \"npm run dev\" \"npm run electron\"",
     "electron": "wait-on http://localhost:3000 && electron .",
-    "electron:build": "npm run build && electron-builder",
-    "electron:build:all": "npm run build && electron-builder -mwl",
-    "electron:build:mac": "npm run build && electron-builder --mac",
-    "electron:build:win": "npm run build && electron-builder --win",
-    "electron:build:linux": "npm run build && electron-builder --linux",
+    "postinstall": "electron-builder install-app-deps && npm run fix:dependencies",
+    "fix:dependencies": "node electron-scripts/fixDependencies.js",
+    "prebuild:electron": "npm run build && node lib/fixDmgLicense.js && npm run fix:dependencies",
+    "electron:build": "npm run prebuild:electron && electron-builder",
+    "electron:build:all": "npm run prebuild:electron && electron-builder -mwl",
+    "electron:build:mac": "npm run prebuild:electron && electron-builder --mac",
+    "electron:build:win": "npm run prebuild:electron && electron-builder --win",
+    "electron:build:linux": "npm run prebuild:electron && electron-builder --linux",
     "mobile:android": "cap add android && cap sync android && cap open android",
     "mobile:ios": "cap add ios && cap sync ios && cap open ios"
   },
@@ -50,7 +63,9 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
+    "electron-is-dev": "^3.0.1",
     "embla-carousel-react": "^8.5.2",
+    "iconv-corefoundation": "^1.1.7",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.477.0",
     "next": "15.2.1-canary.5",
@@ -73,16 +88,20 @@
     "@capacitor/cli": "^5.5.0",
     "@capacitor/core": "^5.5.0",
     "@capacitor/ios": "^5.5.0",
+    "@electron/rebuild": "^3.7.1",
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "concurrently": "^8.2.2",
+    "dmg-license": "^1.0.11",
     "electron": "^28.1.0",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^24.13.3",
     "eslint": "^9",
     "eslint-config-next": "15.2.1-canary.5",
+    "patch-package": "^8.0.0",
+    "postinstall-postinstall": "^2.1.0",
     "rimraf": "^5.0.10",
     "tailwindcss": "^4",
     "typescript": "^5",
@@ -91,6 +110,8 @@
   "build": {
     "appId": "com.electron.next",
     "productName": "Electron Next App",
+    "npmRebuild": true,
+    "asar": true,
     "files": [
       "electron/**/*",
       "out/**/*",
