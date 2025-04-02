@@ -96,8 +96,12 @@ export function Dashboard({
       title: 'Menu',
       items: [
         { title: 'Dashboard', href: '/dashboard' },
+        { title: 'Services', href: '/services' },
+        { title: 'Documentation', href: '/documentation' },
+        { title: 'Entities', href: '/entities' },
         { title: 'Wikipedia', href: '/render' }
-      ]
+      ],
+      defaultOpen: true
     },
     {
       title: 'Admin',
@@ -105,7 +109,8 @@ export function Dashboard({
         { title: 'Users', href: '/admin/users' },
         { title: 'Settings', href: '/admin/settings' }
       ],
-      requiredRole: 'admin'
+      requiredRole: 'admin',
+      defaultOpen: true
     }
   ];
   
